@@ -13,8 +13,12 @@
     </ion-toolbar>
   </ion-header>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+<h2 class = "ion-padding-start">Log last nights sleep</h2>
+<ion-item>
+  <ion-input label="Went to bed" labelPlacement = "stacked" type = "datetime-local" [(ngModel)]="bedtime"></ion-input>
+</ion-item>
+<ion-item>
+  <ion-input label="Woke up" labelPlacement = "stacked" type = "datetime-local" [(ngModel)]="wakeTime"></ion-input>
+</ion-item>
+<ion-button expand = "block" class = "ion-margin" (click) = "logSleep()">Save sleep</ion-button>
 </ion-content>
