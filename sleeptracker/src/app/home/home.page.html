@@ -15,10 +15,40 @@
 
 <h2 class = "ion-padding-start">Log last nights sleep</h2>
 <ion-item>
-  <ion-input label="Went to bed" labelPlacement = "stacked" type = "datetime-local" [(ngModel)]="bedtime"></ion-input>
+  <ion-label>Went to bed</ion-label>
+  <ion-datetime-button datetime = "bedtime"></ion-datetime-button>
 </ion-item>
 <ion-item>
-  <ion-input label="Woke up" labelPlacement = "stacked" type = "datetime-local" [(ngModel)]="wakeTime"></ion-input>
+  <ion-label>Woke up</ion-label>
+  <ion-datetime-button datetime = "waketime"></ion-datetime-button>
 </ion-item>
+
+<ion-modal [keepContentsMounted] = "true">
+  <ng-template>
+    <ion-datetime id= "bedtime" [(ngModel)] = "bedtime"></ion-datetime>
+  </ng-template>
+</ion-modal>
+<ion-modal [keepContentsMounted]="true">
+  <ng-template>
+    <ion-datetime id="waketime" [(ngModel)]= "wakeTime"></ion-datetime>
+  </ng-template>
+</ion-modal>
+
 <ion-button expand = "block" class = "ion-margin" (click) = "logSleep()">Save sleep</ion-button>
+<h2 class = "ion-padding-start">Logs</h2>
+<ion-list>
+  @for(log of allSleepData; track log.id){
+    <ion-item>
+      <ion-label>
+        <h3>{{log.summaryString()}}</h3>
+        <p>{{log.dateString()}}</p>
+      </ion-label>
+    </ion-item>
+  }
+  @empty{
+    <ion-item>
+      <ion-label>No logs</ion-label>
+    </ion-item>
+  }
+</ion-list>
 </ion-content>
