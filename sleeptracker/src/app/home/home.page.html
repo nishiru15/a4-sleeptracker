@@ -35,6 +35,19 @@
 </ion-modal>
 
 <ion-button expand = "block" class = "ion-margin" (click) = "logSleep()">Save sleep</ion-button>
+<h2 class = "ion-padding-start"> How sleepy do you feel?</h2>
+<ion-list>
+  <ion-radio-group [(ngModel)]= "selLevel">
+    @for (lvl of level; track lvl.value){
+      <ion-item>
+        <ion-radio [value]= "lvl.value" justify="space-between">
+          <span class = "ion-text-wrap">{{lvl.value}}.{{lvl.text}}</span>
+        </ion-radio>
+      </ion-item>
+    }
+  </ion-radio-group>
+</ion-list>
+<ion-button expand = "block" class ="ion-margin" (click)= "logSleepiness()" [disabled]="selLevel===null">Log Sleepiness</ion-button>
 <h2 class = "ion-padding-start">Logs</h2>
 <ion-list>
   @for(log of allSleepData; track log.id){

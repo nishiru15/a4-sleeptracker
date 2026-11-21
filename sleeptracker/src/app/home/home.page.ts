@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonItem, IonButton, IonList, IonLabel, IonDatetime, IonDatetimeButton, IonModal} from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonItem, IonButton, IonList, IonLabel, IonDatetime, IonDatetimeButton, IonModal, IonRadioGroup, IonRadio} from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { SleepService } from '../services/sleep.service';
 import { SleepData } from '../data/sleep-data';
@@ -10,10 +10,12 @@ import { StanfordSleepinessData } from '../data/stanford-sleepiness-data';
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonItem, IonButton, IonList, IonLabel, IonDatetime, IonDatetimeButton, IonModal, FormsModule],})
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonItem, IonButton, IonList, IonLabel, IonDatetime, IonDatetimeButton, IonModal ,IonRadioGroup, IonRadio, FormsModule],})
 export class HomePage {
 	bedtime:string = this.toLoc(this.daysAgo(1,23));
 	wakeTime:string = this.toLoc(this.daysAgo(0,7));
+	level= StanfordSleepinessData.ScaleValues.map((text, value)=> ({value:value, text: text})).filter(level=>level.value>0);
+	selLevel:number | null = null;
   	constructor(public sleepService:SleepService) {
 
 	}
@@ -60,5 +62,16 @@ export class HomePage {
 		console.log('Logged:', s.summaryString());
 		this.bedtime = this.toLoc(this.daysAgo(1,23));;
 		this.wakeTime = this.toLoc(this.daysAgo(0,7));
+	}
+
+	logSleepiness(){
+		if(this.selLevel=== null){
+			console.log('Pick sleepiness level');
+			return;
+		}
+		const s = new StanfordSleepinessData(this.selLevel);
+		this.sleepService.logSleepinessData(s);
+		console.log('Logged:', s.summaryString());
+		this.selLevel = null;
 	}
 }
