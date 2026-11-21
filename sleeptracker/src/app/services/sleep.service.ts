@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { SleepData } from '../data/sleep-data';
 import { OvernightSleepData } from '../data/overnight-sleep-data';
 import { StanfordSleepinessData } from '../data/stanford-sleepiness-data';
+import { Preferences } from '@capacitor/preferences';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +15,8 @@ export class SleepService {
 
 	constructor() {
 		if(SleepService.LoadDefaultData) {
-			this.addDefaultData();
-		SleepService.LoadDefaultData = false;
+			SleepService.LoadDefaultData = false;
+			this.loadData();
 	}
 	}
 
@@ -41,10 +42,38 @@ export class SleepService {
 	public logOvernightData(sleepData:OvernightSleepData) {
 		SleepService.AllSleepData.push(sleepData);
 		SleepService.AllOvernightData.push(sleepData);
+		this.saveData();
 	}
 
 	public logSleepinessData(sleepData:StanfordSleepinessData) {
 		SleepService.AllSleepData.push(sleepData);
 		SleepService.AllSleepinessData.push(sleepData);
+		this.saveData();
+	}
+
+	async saveData(){
+		await Preferences.set({key: 'sleepData', value: JSON.stringify(SleepService.AllSleepData)});
+	}
+
+	async loadData(){
+		const{value} = await Preferences.get({key: 'sleepData'});
+		if(value== null){
+			this.addDefaultData();
+			return;
+		}
+		for (const item of JSON.parse(value)){
+			let log;
+			if('sleepStart' in item){
+				log = new OvernightSleepData(new Date(item.sleepStart), new Date(item.sleepEnd));
+				SleepService.AllOvernightData.push(log);
+			}
+			else{
+				log = new StanfordSleepinessData(item.loggedValue, new Date(item.loggdAt));
+				SleepService.AllSleepinessData.push(log);
+			}
+			log.id = item.id;
+			log.loggedAt= new Date(item.loggedAt);
+			SleepService.AllSleepData.push(log);
+		}
 	}
 }
