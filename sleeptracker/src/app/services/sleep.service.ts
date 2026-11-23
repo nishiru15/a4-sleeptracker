@@ -58,6 +58,17 @@ export class SleepService {
 		this.saveData();
 	}
 
+	restData(log:SleepData){
+		SleepService.AllSleepData.push(log);
+		if(log instanceof OvernightSleepData){
+			SleepService.AllOvernightData.push(log);
+		}
+		else{
+			SleepService.AllSleepinessData.push(log as StanfordSleepinessData);
+		}
+		this.saveData();
+	}
+
 	async saveData(){
 		await Preferences.set({key: 'sleepData', value: JSON.stringify(SleepService.AllSleepData)});
 	}

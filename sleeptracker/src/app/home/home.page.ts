@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonItem, IonButton, IonList, IonLabel, IonDatetime, IonDatetimeButton, IonModal, IonRadioGroup, IonRadio, ToastController} from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonItem, IonButton, IonList, IonLabel, IonDatetime, IonDatetimeButton, IonModal, IonRadioGroup, IonRadio, IonItemSliding, IonItemOptions, IonItemOption, ToastController} from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { SleepService } from '../services/sleep.service';
 import { SleepData } from '../data/sleep-data';
@@ -10,7 +10,7 @@ import { StanfordSleepinessData } from '../data/stanford-sleepiness-data';
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonItem, IonButton, IonList, IonLabel, IonDatetime, IonDatetimeButton, IonModal ,IonRadioGroup, IonRadio, FormsModule],})
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonItem, IonButton, IonList, IonLabel, IonDatetime, IonDatetimeButton, IonModal ,IonRadioGroup, IonRadio, IonItemSliding, IonItemOptions, IonItemOption, FormsModule],})
 export class HomePage {
 	bedtime:string = this.toLoc(this.daysAgo(1,23));
 	wakeTime:string = this.toLoc(this.daysAgo(0,7));
@@ -84,5 +84,11 @@ export class HomePage {
 		this.sleepService.logSleepinessData(s);
 		this.tHelper('Logged: '+ s.summaryString(), ()=> this.sleepService.delData(s));
 		this.selLevel = null;
+	}
+
+	async deleteLog(log:SleepData, item:IonItemSliding){
+		await item.close();
+		this.sleepService.delData(log);
+		this.tHelper('Log deleted', ()=>this.sleepService.restData(log));
 	}
 }
