@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonItem, IonButton, IonList, IonLabel, IonDatetime, IonDatetimeButton, IonModal, IonRadioGroup, IonRadio} from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonItem, IonButton, IonList, IonLabel, IonDatetime, IonDatetimeButton, IonModal, IonRadioGroup, IonRadio, ToastController} from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { SleepService } from '../services/sleep.service';
 import { SleepData } from '../data/sleep-data';
@@ -16,7 +16,7 @@ export class HomePage {
 	wakeTime:string = this.toLoc(this.daysAgo(0,7));
 	level= StanfordSleepinessData.ScaleValues.map((text, value)=> ({value:value, text: text})).filter(level=>level.value>0);
 	selLevel:number | null = null;
-  	constructor(public sleepService:SleepService) {
+  	constructor(public sleepService:SleepService, private toastCtrl:ToastController) {
 
 	}
 
@@ -30,6 +30,13 @@ export class HomePage {
 	toLoc(d:Date){
 		const o = d.getTimezoneOffset()*60000;
 		return new Date(d.getTime() -o).toISOString().slice(0,16);
+	}
+
+	async tHelper(message:string){
+		const toast =await this.toastCtrl.create({
+			message:message, duration:2500, position: 'top'
+		});
+		await toast.present();
 	}
 
 	ngOnInit() {
@@ -46,20 +53,20 @@ export class HomePage {
 		const start = new Date(this.bedtime);
 		const end = new Date(this.wakeTime);
 		if ( isNaN(start.getTime())|| isNaN(end.getTime())){
-			console.log('fill both times.');
+			this.tHelper('Fill both times');
 			return;
 		}		
 		if(end <=start){
-			console.log('Bedtime should be before wake up time')
+			this.tHelper('Bedtime should be before wake up time');
 			return;
 		}
 		if(end.getTime()>Date.now()){
-			console.log("Times can't be in the future")
+			this.tHelper("Times can't be in the future");
 			return;
 		}
 		const s = new OvernightSleepData(new Date(this.bedtime), new Date(this.wakeTime));
 		this.sleepService.logOvernightData(s);
-		console.log('Logged:', s.summaryString());
+		this.tHelper('Logged: ' +s.summaryString());
 		this.bedtime = this.toLoc(this.daysAgo(1,23));;
 		this.wakeTime = this.toLoc(this.daysAgo(0,7));
 	}
@@ -71,7 +78,7 @@ export class HomePage {
 		}
 		const s = new StanfordSleepinessData(this.selLevel);
 		this.sleepService.logSleepinessData(s);
-		console.log('Logged:', s.summaryString());
+		this.tHelper('Logged: '+ s.summaryString());
 		this.selLevel = null;
 	}
 }
