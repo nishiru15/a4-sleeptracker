@@ -24,4 +24,13 @@ export class OvernightSleepData extends SleepData {
 	override dateString():string {
 		return "Night of " + this.sleepStart.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 	}
+
+	override timeString(){
+		const opts:Intl.DateTimeFormatOptions= {hour: 'numeric', minute: '2-digit'};
+		return this.sleepStart.toLocaleTimeString('en-US', opts)+ ' - ' + this.sleepEnd.toLocaleTimeString('en-US', opts);
+	}
+
+	override sortDate(){
+		return this.sleepEnd;
+	}
 }

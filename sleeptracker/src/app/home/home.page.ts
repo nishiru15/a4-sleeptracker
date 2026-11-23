@@ -48,6 +48,10 @@ export class HomePage {
 		return SleepService.AllSleepData;
 	}
 
+	get sortedLogs(){
+		return [...this.allSleepData].sort((a,b)=> b.sortDate().getTime()-a.sortDate().getTime());
+	}
+
 	logSleep(){
 		console.log('bedtime:', this.bedtime, 'wakeTime:', this.wakeTime);
 		const start = new Date(this.bedtime);

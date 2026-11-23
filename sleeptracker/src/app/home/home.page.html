@@ -50,11 +50,12 @@
 <ion-button expand = "block" class ="ion-margin" (click)= "logSleepiness()" [disabled]="selLevel===null">Log Sleepiness</ion-button>
 <h2 class = "ion-padding-start">Logs</h2>
 <ion-list>
-  @for(log of allSleepData; track log.id){
+  @for(log of sortedLogs; track log.id){
     <ion-item>
       <ion-label>
         <h3>{{log.summaryString()}}</h3>
         <p>{{log.dateString()}}</p>
+        <p>{{log.timeString()}}</p>
       </ion-label>
     </ion-item>
   }
