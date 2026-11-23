@@ -32,9 +32,9 @@ export class HomePage {
 		return new Date(d.getTime() -o).toISOString().slice(0,16);
 	}
 
-	async tHelper(message:string){
+	async tHelper(message:string, undo?: ()=> void){
 		const toast =await this.toastCtrl.create({
-			message:message, duration:2500, position: 'top'
+			message:message, duration:2500, position: 'top', buttons: undo ? [{text:'Undo', handler: undo}]: [],
 		});
 		await toast.present();
 	}
@@ -66,19 +66,19 @@ export class HomePage {
 		}
 		const s = new OvernightSleepData(new Date(this.bedtime), new Date(this.wakeTime));
 		this.sleepService.logOvernightData(s);
-		this.tHelper('Logged: ' +s.summaryString());
+		this.tHelper('Logged: ' +s.summaryString(), () => this.sleepService.delData(s));
 		this.bedtime = this.toLoc(this.daysAgo(1,23));;
 		this.wakeTime = this.toLoc(this.daysAgo(0,7));
 	}
 
 	logSleepiness(){
 		if(this.selLevel=== null){
-			console.log('Pick sleepiness level');
+			this.tHelper('Pick sleepiness level');
 			return;
 		}
 		const s = new StanfordSleepinessData(this.selLevel);
 		this.sleepService.logSleepinessData(s);
-		this.tHelper('Logged: '+ s.summaryString());
+		this.tHelper('Logged: '+ s.summaryString(), ()=> this.sleepService.delData(s));
 		this.selLevel = null;
 	}
 }

@@ -51,6 +51,13 @@ export class SleepService {
 		this.saveData();
 	}
 
+	delData(log:SleepData){
+		SleepService.AllSleepData= SleepService.AllSleepData.filter(d=>d.id!==log.id);
+		SleepService.AllOvernightData= SleepService.AllOvernightData.filter(d=>d.id!== log.id);
+		SleepService.AllSleepinessData = SleepService.AllSleepinessData.filter(d=> d.id!== log.id);
+		this.saveData();
+	}
+
 	async saveData(){
 		await Preferences.set({key: 'sleepData', value: JSON.stringify(SleepService.AllSleepData)});
 	}
