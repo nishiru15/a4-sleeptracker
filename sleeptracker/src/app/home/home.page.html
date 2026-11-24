@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Blank
+      Sleep Tracker
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -9,11 +9,21 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
+      <ion-title size="large">Sleep Tracker</ion-title>
     </ion-toolbar>
   </ion-header>
+  <ion-card class= "summary">
+    <ion-card-header>
+      <ion-card-subtitle>Last night</ion-card-subtitle>
+      <ion-card-title>{{lastNight ? lastNight.summaryString(): 'No logs'}}</ion-card-title>
+    </ion-card-header>
+  </ion-card>
 
-<h2 class = "ion-padding-start">Log last nights sleep</h2>
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>Log last night's sleep</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
 <ion-item>
   <ion-label>Went to bed</ion-label>
   <ion-datetime-button datetime = "bedtime"></ion-datetime-button>
@@ -35,7 +45,14 @@
 </ion-modal>
 
 <ion-button expand = "block" class = "ion-margin" (click) = "logSleep()">Save sleep</ion-button>
-<h2 class = "ion-padding-start"> How sleepy do you feel?</h2>
+</ion-card-content>
+</ion-card>
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>How sleepy do you feel?</ion-card-title>
+    <ion-card-subtitle>Stanford Sleepiness Scale</ion-card-subtitle>
+  </ion-card-header>
+  <ion-card-content>
 <ion-list>
   <ion-radio-group [(ngModel)]= "selLevel">
     @for (lvl of level; track lvl.value){
@@ -48,7 +65,12 @@
   </ion-radio-group>
 </ion-list>
 <ion-button expand = "block" class ="ion-margin" (click)= "logSleepiness()" [disabled]="selLevel===null">Log Sleepiness</ion-button>
-<h2 class = "ion-padding-start">Logs</h2>
+</ion-card-content>
+</ion-card>
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>My logs</ion-card-title>
+  </ion-card-header>
 <ion-list>
   @for(log of sortedLogs; track log.id){
     <ion-item-sliding #item>
@@ -72,4 +94,5 @@
   }
 </ion-list>
   <p class = "ion-text-center hint">Swipe left on a log to delete</p>
+  </ion-card>
 </ion-content>

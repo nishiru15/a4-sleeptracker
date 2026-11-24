@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonItem, IonButton, IonList, IonLabel, IonDatetime, IonDatetimeButton, IonModal, IonRadioGroup, IonRadio, IonItemSliding, IonItemOptions, IonItemOption, ToastController} from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonItem, IonButton, IonList, IonLabel, IonDatetime, IonDatetimeButton, IonModal, IonRadioGroup, IonRadio, IonItemSliding, IonItemOptions, IonItemOption, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, ToastController} from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { SleepService } from '../services/sleep.service';
 import { SleepData } from '../data/sleep-data';
@@ -10,7 +10,7 @@ import { StanfordSleepinessData } from '../data/stanford-sleepiness-data';
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonItem, IonButton, IonList, IonLabel, IonDatetime, IonDatetimeButton, IonModal ,IonRadioGroup, IonRadio, IonItemSliding, IonItemOptions, IonItemOption, FormsModule],})
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonItem, IonButton, IonList, IonLabel, IonDatetime, IonDatetimeButton, IonModal ,IonRadioGroup, IonRadio, IonItemSliding, IonItemOptions, IonItemOption, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, FormsModule],})
 export class HomePage {
 	bedtime:string = this.toLoc(this.daysAgo(1,23));
 	wakeTime:string = this.toLoc(this.daysAgo(0,7));
@@ -50,6 +50,11 @@ export class HomePage {
 
 	get sortedLogs(){
 		return [...this.allSleepData].sort((a,b)=> b.sortDate().getTime()-a.sortDate().getTime());
+	}
+
+	get lastNight(){
+		const nights = [...SleepService.AllOvernightData].sort((a,b)=>b.sortDate().getTime()-a.sortDate().getTime());
+		return nights.length>0?nights[0]: null;
 	}
 
 	logSleep(){
