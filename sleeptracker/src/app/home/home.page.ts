@@ -1,21 +1,23 @@
 import { Component } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonItem, IonButton, IonList, IonLabel, IonDatetime, IonDatetimeButton, IonModal, IonRadioGroup, IonRadio, IonItemSliding, IonItemOptions, IonItemOption, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, ToastController} from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonItem, IonButton, IonList, IonLabel, IonDatetime, IonDatetimeButton, IonModal, IonRadioGroup, IonRadio, IonItemSliding, IonItemOptions, IonItemOption, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonToggle, ToastController} from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { SleepService } from '../services/sleep.service';
 import { SleepData } from '../data/sleep-data';
 import { OvernightSleepData } from '../data/overnight-sleep-data';
 import { StanfordSleepinessData } from '../data/stanford-sleepiness-data';
+import { LocalNotifications } from '@capacitor/local-notifications';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonItem, IonButton, IonList, IonLabel, IonDatetime, IonDatetimeButton, IonModal ,IonRadioGroup, IonRadio, IonItemSliding, IonItemOptions, IonItemOption, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, FormsModule],})
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonItem, IonButton, IonList, IonLabel, IonDatetime, IonDatetimeButton, IonModal ,IonRadioGroup, IonRadio, IonItemSliding, IonItemOptions, IonItemOption, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonToggle, FormsModule],})
 export class HomePage {
 	bedtime:string = this.toLoc(this.daysAgo(1,23));
 	wakeTime:string = this.toLoc(this.daysAgo(0,7));
 	level= StanfordSleepinessData.ScaleValues.map((text, value)=> ({value:value, text: text})).filter(level=>level.value>0);
 	selLevel:number | null = null;
+	notifs:boolean= false;
   	constructor(public sleepService:SleepService, private toastCtrl:ToastController) {
 
 	}
@@ -95,5 +97,60 @@ export class HomePage {
 		await item.close();
 		this.sleepService.delData(log);
 		this.tHelper('Log deleted', ()=>this.sleepService.restData(log));
+	}
+
+	async allowNotifs(){
+		let allow = await LocalNotifications.checkPermissions();
+		if(allow.display!=='granted'){
+			allow= await LocalNotifications.requestPermissions();
+		}
+		if(allow.display!== 'granted'){
+			this.tHelper('Notifications are blocked, you can allow them in settings');
+			return false;
+		}
+		return true;
+	}
+
+	async testNotif(){
+		if(!(await this.allowNotifs())){
+			return;
+		}
+		await LocalNotifications.schedule({notifications:[{
+			id:999, title: 'How sleepy are you?', body: 'Log your sleepiness', schedule: {at: new Date(Date.now() + 5000)},
+		}]});
+		this.tHelper('A notification will show in 5 seconds');
+	}
+
+	async toggleNotics(event:any){
+		const on = event.detail.checked;
+		if(on){
+			if(!(await this.allowNotifs())){
+				this.notifs= false;
+				return;
+			}
+			const notifications:any[] = [];
+			let id = 1;
+			for (let day= 0; day <7; day++){
+				for (const hour of [10,14,18]){
+					const at = new Date();
+					at.setDate(at.getDate()+ day);
+					at.setHours(hour,0,0,0);
+					if(at.getTime()> Date.now()){
+						notifications.push({id:id++, title:'How sleepy are you?',body: 'Log your sleepiness', schedule: {at: at}});
+					}
+				}
+			}
+			await LocalNotifications.schedule({notifications:notifications});
+				this.tHelper('Reminder on 10am, 2pm, and 6pm');
+		}
+		else{
+			const waiting = await LocalNotifications.getPending();
+			if(waiting.notifications.length>0){
+				await LocalNotifications.cancel({notifications: waiting.notifications});
+
+			}
+			this.tHelper('Reminders off');
+		}
+		this.notifs= on;
 	}
 }
