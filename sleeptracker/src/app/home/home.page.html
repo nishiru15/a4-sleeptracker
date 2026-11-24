@@ -69,6 +69,18 @@
 </ion-card>
 <ion-card>
   <ion-card-header>
+    <ion-card-title>Reminders</ion-card-title>
+        <ion-card-subtitle>Get a notification to log your sleepiness</ion-card-subtitle>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-item lines="none">
+      <ion-toggle [checked]="notifs" (ionChange)="toggleNotics($event)">Remind me at 10am, 2pm, 6pm</ion-toggle>
+    </ion-item>
+    <ion-button expand="block" fill="outline" class="ion-margin-top" (click)="testNotif()">Send a test reminder</ion-button>
+    </ion-card-content>
+</ion-card>      
+<ion-card>
+  <ion-card-header>
     <ion-card-title>My logs</ion-card-title>
   </ion-card-header>
 <ion-list>
