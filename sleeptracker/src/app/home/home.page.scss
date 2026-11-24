@@ -13,3 +13,13 @@ ion-button{
   font-size: 13px;
   color: var(--ion-color-medium);
 }
+.summary{
+  background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-tertiary));
+  ion-card-title, ion-card-subtitle{
+    color: #ffffff;
+  }
+}
+
+ion-card{
+  border-radius: 16px;
+}
