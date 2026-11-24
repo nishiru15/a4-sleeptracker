@@ -16,7 +16,7 @@ Roughly 12-15 hours
 
 
 3. What online resources did you consult when completing this assignment? (list specific URLs)
-https://ionicframework.com/docs/api/toas
+https://ionicframework.com/docs/api/toast
 I referenced ionic framework a lot especially for toast, but I also used it for the sliding delete features and some of the syntax for other features. I also referenced Ai for certain syntax as well.
 I also referenced this https://capacitorjs.com/docs/apis/preferences for help with storage 
 and https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function for better understanding on async
@@ -27,7 +27,7 @@ I didn't consult any classmates
 
 
 5. Is there anything special we need to know in order to run your code?
-Nope
+allow notifications in browser
 
 
 --Aim for no more than two sentences for each of the following questions.--
@@ -42,7 +42,7 @@ I designed the app with iOS in mind since I use iOS but it should work for andro
 
 
 8. How can a person log overnight sleep in your app? Why did you choose to support logging overnight sleep in this way?
-The person just selects their bedtime and wake-up time using ionic pickers, which show times from 11pm to 7am. Then they hit save sleep.
+The person just selects their bedtime and wake-up time using ionic pickers, which show times auto filled with 11pm to 7am. Then they hit save sleep.
 
 
 9. How can a person log sleepiness during the day in your app? Why did you choose to support logging sleepiness in this way?
@@ -67,7 +67,7 @@ it backs up to the browsers local storage, and permanent storage for a phone, so
 14. How does your app implement or follow principles of good mobile design?
 My app makes sure to handle errors, by making sure users can only enter valid sleep times. It also has an undo button along with the completed notification. It is also very user friendly and has a simple but appealing design that is easy to follow.
 
-Demo vid timestamps
+Demo vid timestamps 133finaldemo.mov
 0:00 start screen
 0:04 error prevention
 0:10 sleep log successful
